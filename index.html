@@ -3,71 +3,143 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Eğlence Playstation</title>
+<title>Eğlence Playstation Sipariş</title>
 
 <style>
+* { box-sizing: border-box; }
+
 body {
-    margin:0;
+    margin: 0;
     font-family: Arial, sans-serif;
-    background:#111;
-    color:white;
+    background: #0b0b12;
+    color: white;
+    padding-bottom: 130px;
 }
 
 header {
-    text-align:center;
-    padding:35px 20px;
-    background:#000;
+    padding: 25px 18px;
+    background: linear-gradient(135deg, #050505, #111133);
+    border-bottom: 1px solid #2626ff;
 }
 
-h1 { color:#00eaff; }
-
-.kutu {
-    background:#1d1d1d;
-    margin:15px;
-    padding:20px;
-    border-radius:15px;
+header h1 {
+    margin: 0;
+    color: #00eaff;
+    font-size: 26px;
 }
 
-.menu-item {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    background:#292929;
-    padding:15px;
-    border-radius:12px;
-    margin-bottom:10px;
+header p {
+    margin: 8px 0 0;
+    color: #cfcfcf;
 }
 
-button {
-    background:#00eaff;
-    color:#000;
-    border:none;
-    padding:10px 15px;
-    border-radius:10px;
-    font-weight:bold;
+.tabs {
+    display: flex;
+    gap: 10px;
+    padding: 15px;
+    position: sticky;
+    top: 0;
+    background: #0b0b12;
+    z-index: 5;
 }
 
-.sepet {
-    position:fixed;
-    bottom:0;
-    left:0;
-    right:0;
-    background:#000;
-    padding:15px;
-    border-top:2px solid #00eaff;
+.tab {
+    flex: 1;
+    padding: 13px;
+    border-radius: 14px;
+    border: 1px solid #00eaff;
+    background: #151522;
+    color: white;
+    font-weight: bold;
 }
 
-input {
-    width:100%;
-    padding:12px;
-    border-radius:10px;
-    border:none;
-    margin-bottom:10px;
-    font-size:16px;
+.tab.active {
+    background: #00eaff;
+    color: #000;
 }
 
-#sepetListesi {
-    margin-bottom:10px;
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    padding: 15px;
+}
+
+.card {
+    background: #171724;
+    border: 1px solid #26263a;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 0 12px rgba(0, 234, 255, 0.08);
+}
+
+.card img {
+    width: 100%;
+    height: 115px;
+    object-fit: contain;
+    background: #fff;
+    padding: 10px;
+}
+
+.card-body {
+    padding: 12px;
+}
+
+.card h3 {
+    margin: 0 0 6px;
+    font-size: 16px;
+}
+
+.price {
+    color: #00eaff;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.card button,
+.cart button {
+    width: 100%;
+    background: #00eaff;
+    color: #000;
+    border: none;
+    padding: 11px;
+    border-radius: 12px;
+    font-weight: bold;
+}
+
+.cart {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #050505;
+    border-top: 2px solid #00eaff;
+    padding: 14px;
+    z-index: 10;
+}
+
+.cart-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cart-items {
+    max-height: 90px;
+    overflow-y: auto;
+    margin: 8px 0;
+    color: #ddd;
+    font-size: 14px;
+}
+
+.small-btn {
+    background: #292929 !important;
+    color: white !important;
+    margin-top: 8px;
+}
+
+.empty {
+    color: #aaa;
 }
 </style>
 </head>
@@ -75,103 +147,190 @@ input {
 <body>
 
 <header>
-<h1>🎮 Eğlence Playstation</h1>
-<p>QR Sipariş Sistemi</p>
+    <h1>🎮 Eğlence Playstation</h1>
+    <p>Menüden ürün seç, sepete ekle, WhatsApp ile gönder.</p>
 </header>
 
-<div class="kutu">
-<h2>🥤 Menü</h2>
-
-<div class="menu-item">
-<span>Kola - 50 TL</span>
-<button onclick="sepeteEkle('Kola', 50)">Ekle</button>
+<div class="tabs">
+    <button class="tab active" onclick="kategoriSec('İçecekler', this)">🥤 İçecekler</button>
+    <button class="tab" onclick="kategoriSec('Yiyecekler', this)">🍔 Yiyecekler</button>
 </div>
 
-<div class="menu-item">
-<span>Fanta - 50 TL</span>
-<button onclick="sepeteEkle('Fanta', 50)">Ekle</button>
-</div>
+<div class="grid" id="urunAlani"></div>
 
-<div class="menu-item">
-<span>Çay - 20 TL</span>
-<button onclick="sepeteEkle('Çay', 20)">Ekle</button>
-</div>
+<div class="cart">
+    <div class="cart-head">
+        <strong>🛒 Sepet</strong>
+        <strong><span id="toplam">0</span> TL</strong>
+    </div>
 
-<div class="menu-item">
-<span>Tost - 100 TL</span>
-<button onclick="sepeteEkle('Tost', 100)">Ekle</button>
-</div>
+    <div class="cart-items" id="sepetListesi">
+        <span class="empty">Sepet boş</span>
+    </div>
 
-<div class="menu-item">
-<span>Su - 15 TL</span>
-<button onclick="sepeteEkle('Su', 15)">Ekle</button>
-</div>
-
-</div>
-
-<div class="sepet">
-<h3>🛒 Sepet</h3>
-
-<input type="text" id="masaNo" placeholder="Masa numarası yazın">
-
-<div id="sepetListesi">Sepet boş</div>
-
-<strong>Toplam: <span id="toplam">0</span> TL</strong>
-<br><br>
-
-<button onclick="siparisGonder()">Siparişi Gönder</button>
+    <button onclick="siparisGonder()">Siparişi Gönder</button>
+    <button class="small-btn" onclick="sepetiTemizle()">Sepeti Temizle</button>
 </div>
 
 <script>
-let sepet = [];
-let toplam = 0;
+const whatsappNumara = "905423948645";
 
-function sepeteEkle(urun, fiyat) {
-    sepet.push({urun, fiyat});
-    toplam += fiyat;
+const urunler = [
+    {
+        ad: "Su",
+        fiyat: 15,
+        kategori: "İçecekler",
+        resim: "https://via.placeholder.com/300x200?text=Su"
+    },
+    {
+        ad: "Pepsi Cam Şişe",
+        fiyat: 50,
+        kategori: "İçecekler",
+        resim: "https://via.placeholder.com/300x200?text=Pepsi"
+    },
+    {
+        ad: "Pepsi Kutu",
+        fiyat: 50,
+        kategori: "İçecekler",
+        resim: "https://via.placeholder.com/300x200?text=Pepsi+Kutu"
+    },
+    {
+        ad: "7UP",
+        fiyat: 50,
+        kategori: "İçecekler",
+        resim: "https://via.placeholder.com/300x200?text=7UP"
+    },
+    {
+        ad: "Yedigün",
+        fiyat: 50,
+        kategori: "İçecekler",
+        resim: "https://via.placeholder.com/300x200?text=Yedigun"
+    },
+    {
+        ad: "Lipton Ice Tea",
+        fiyat: 50,
+        kategori: "İçecekler",
+        resim: "https://via.placeholder.com/300x200?text=Lipton"
+    },
+    {
+        ad: "Tropicana",
+        fiyat: 50,
+        kategori: "İçecekler",
+        resim: "https://via.placeholder.com/300x200?text=Tropicana"
+    },
+    {
+        ad: "Maden Suyu",
+        fiyat: 30,
+        kategori: "İçecekler",
+        resim: "https://via.placeholder.com/300x200?text=Maden+Suyu"
+    },
+    {
+        ad: "Tost",
+        fiyat: 100,
+        kategori: "Yiyecekler",
+        resim: "https://via.placeholder.com/300x200?text=Tost"
+    },
+    {
+        ad: "Sufle",
+        fiyat: 100,
+        kategori: "Yiyecekler",
+        resim: "https://via.placeholder.com/300x200?text=Sufle"
+    }
+];
+
+let aktifKategori = "İçecekler";
+let sepet = [];
+
+function urunleriGoster() {
+    const alan = document.getElementById("urunAlani");
+    alan.innerHTML = "";
+
+    urunler
+        .filter(urun => urun.kategori === aktifKategori)
+        .forEach(urun => {
+            alan.innerHTML += `
+                <div class="card">
+                    <img src="${urun.resim}" alt="${urun.ad}">
+                    <div class="card-body">
+                        <h3>${urun.ad}</h3>
+                        <div class="price">${urun.fiyat} TL</div>
+                        <button onclick="sepeteEkle('${urun.ad}')">Sepete Ekle</button>
+                    </div>
+                </div>
+            `;
+        });
+}
+
+function kategoriSec(kategori, buton) {
+    aktifKategori = kategori;
+
+    document.querySelectorAll(".tab").forEach(btn => btn.classList.remove("active"));
+    buton.classList.add("active");
+
+    urunleriGoster();
+}
+
+function sepeteEkle(urunAdi) {
+    const urun = urunler.find(item => item.ad === urunAdi);
+    const mevcut = sepet.find(item => item.ad === urunAdi);
+
+    if (mevcut) {
+        mevcut.adet += 1;
+    } else {
+        sepet.push({ ...urun, adet: 1 });
+    }
+
     sepetiGuncelle();
 }
 
 function sepetiGuncelle() {
-    let liste = document.getElementById("sepetListesi");
-    let toplamAlan = document.getElementById("toplam");
+    const liste = document.getElementById("sepetListesi");
+    const toplamAlan = document.getElementById("toplam");
 
     if (sepet.length === 0) {
-        liste.innerHTML = "Sepet boş";
-    } else {
-        liste.innerHTML = sepet.map((item, index) =>
-            `${index + 1}. ${item.urun} - ${item.fiyat} TL`
-        ).join("<br>");
+        liste.innerHTML = '<span class="empty">Sepet boş</span>';
+        toplamAlan.innerText = 0;
+        return;
     }
+
+    let toplam = 0;
+    liste.innerHTML = "";
+
+    sepet.forEach(item => {
+        toplam += item.fiyat * item.adet;
+        liste.innerHTML += `${item.adet} × ${item.ad} - ${item.fiyat * item.adet} TL<br>`;
+    });
 
     toplamAlan.innerText = toplam;
 }
 
+function sepetiTemizle() {
+    sepet = [];
+    sepetiGuncelle();
+}
+
 function siparisGonder() {
-    let masaNo = document.getElementById("masaNo").value;
-
-    if (masaNo === "") {
-        alert("Lütfen masa numarası yazın.");
-        return;
-    }
-
     if (sepet.length === 0) {
         alert("Sepet boş.");
         return;
     }
 
-    let mesaj = `Merhaba, sipariş vermek istiyorum.%0A%0A`;
-    mesaj += `Masa No: ${masaNo}%0A%0A`;
-    mesaj += `Sipariş:%0A`;
+    let toplam = 0;
+    let mesaj = "Merhaba, sipariş vermek istiyorum.%0A%0A";
+    mesaj += "Sipariş:%0A";
 
     sepet.forEach(item => {
-        mesaj += `- ${item.urun} - ${item.fiyat} TL%0A`;
+        const araToplam = item.fiyat * item.adet;
+        toplam += araToplam;
+        mesaj += `- ${item.adet} x ${item.ad} - ${araToplam} TL%0A`;
     });
 
     mesaj += `%0AToplam: ${toplam} TL`;
 
-    window.location.href = `https://wa.me/905423948645?text=${mesaj}`;
+    window.location.href = `https://wa.me/${whatsappNumara}?text=${mesaj}`;
 }
+
+urunleriGoster();
 </script>
 
 </body>
