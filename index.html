@@ -15,82 +15,164 @@ body {
 
 header {
     text-align:center;
-    padding:40px 20px;
+    padding:35px 20px;
     background:#000;
 }
 
-h1 {
-    color:#00eaff;
-}
+h1 { color:#00eaff; }
 
 .kutu {
     background:#1d1d1d;
-    margin:20px;
+    margin:15px;
     padding:20px;
     border-radius:15px;
 }
 
+.menu-item {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:#292929;
+    padding:15px;
+    border-radius:12px;
+    margin-bottom:10px;
+}
+
 button {
     background:#00eaff;
+    color:#000;
     border:none;
-    padding:15px;
+    padding:10px 15px;
     border-radius:10px;
+    font-weight:bold;
+}
+
+.sepet {
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background:#000;
+    padding:15px;
+    border-top:2px solid #00eaff;
+}
+
+input {
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:none;
+    margin-bottom:10px;
     font-size:16px;
 }
 
-a {
-    color:white;
-    text-decoration:none;
+#sepetListesi {
+    margin-bottom:10px;
 }
 </style>
-
 </head>
 
 <body>
 
 <header>
 <h1>🎮 Eğlence Playstation</h1>
-<p>Oyun • Eğlence • Rekabet</p>
+<p>QR Sipariş Sistemi</p>
 </header>
-
-
-<div class="kutu">
-<h2>🎮 Oyun Ücretleri</h2>
-
-<p>Playstation 5 Saatlik: 100 TL</p>
-
-</div>
-
 
 <div class="kutu">
 <h2>🥤 Menü</h2>
 
-<p>Çay</p>
-<p>Kahve</p>
-<p>Soğuk içecekler</p>
+<div class="menu-item">
+<span>Kola - 50 TL</span>
+<button onclick="sepeteEkle('Kola', 50)">Ekle</button>
+</div>
+
+<div class="menu-item">
+<span>Fanta - 50 TL</span>
+<button onclick="sepeteEkle('Fanta', 50)">Ekle</button>
+</div>
+
+<div class="menu-item">
+<span>Çay - 20 TL</span>
+<button onclick="sepeteEkle('Çay', 20)">Ekle</button>
+</div>
+
+<div class="menu-item">
+<span>Tost - 100 TL</span>
+<button onclick="sepeteEkle('Tost', 100)">Ekle</button>
+</div>
+
+<div class="menu-item">
+<span>Su - 15 TL</span>
+<button onclick="sepeteEkle('Su', 15)">Ekle</button>
+</div>
 
 </div>
 
+<div class="sepet">
+<h3>🛒 Sepet</h3>
 
-<div class="kutu">
-<h2>📱 Sipariş</h2>
+<input type="text" id="masaNo" placeholder="Masa numarası yazın">
 
-<p>WhatsApp üzerinden sipariş verebilirsiniz.</p>
+<div id="sepetListesi">Sepet boş</div>
 
-<a href="https://wa.me/905423948645?text=Merhaba%2C%20sipari%C5%9F%20vermek%20istiyorum.%0AMasa%20No%3A%20%0ASipari%C5%9F%3A%20">
-<button>Sipariş Ver</button>
-</a>
+<strong>Toplam: <span id="toplam">0</span> TL</strong>
+<br><br>
 
+<button onclick="siparisGonder()">Siparişi Gönder</button>
 </div>
 
+<script>
+let sepet = [];
+let toplam = 0;
 
-<div class="kutu">
-<h2>📍 Konum</h2>
+function sepeteEkle(urun, fiyat) {
+    sepet.push({urun, fiyat});
+    toplam += fiyat;
+    sepetiGuncelle();
+}
 
-<p>Antalya Kepez Suryapı</p>
+function sepetiGuncelle() {
+    let liste = document.getElementById("sepetListesi");
+    let toplamAlan = document.getElementById("toplam");
 
-</div>
+    if (sepet.length === 0) {
+        liste.innerHTML = "Sepet boş";
+    } else {
+        liste.innerHTML = sepet.map((item, index) =>
+            `${index + 1}. ${item.urun} - ${item.fiyat} TL`
+        ).join("<br>");
+    }
 
+    toplamAlan.innerText = toplam;
+}
+
+function siparisGonder() {
+    let masaNo = document.getElementById("masaNo").value;
+
+    if (masaNo === "") {
+        alert("Lütfen masa numarası yazın.");
+        return;
+    }
+
+    if (sepet.length === 0) {
+        alert("Sepet boş.");
+        return;
+    }
+
+    let mesaj = `Merhaba, sipariş vermek istiyorum.%0A%0A`;
+    mesaj += `Masa No: ${masaNo}%0A%0A`;
+    mesaj += `Sipariş:%0A`;
+
+    sepet.forEach(item => {
+        mesaj += `- ${item.urun} - ${item.fiyat} TL%0A`;
+    });
+
+    mesaj += `%0AToplam: ${toplam} TL`;
+
+    window.location.href = `https://wa.me/905423948645?text=${mesaj}`;
+}
+</script>
 
 </body>
 </html>
