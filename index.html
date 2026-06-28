@@ -11,9 +11,9 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: #090912;
+    background: radial-gradient(circle at top, #12123a, #07070d 55%);
     color: white;
-    padding-bottom: 130px;
+    padding-bottom: 190px;
 }
 
 header {
@@ -99,8 +99,7 @@ header p {
     margin-bottom: 8px;
 }
 
-.card button,
-.cart button {
+.card button {
     width: 100%;
     background: #00eaff;
     color: #000;
@@ -143,19 +142,69 @@ header p {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 8px;
 }
 
 .cart-items {
-    max-height: 85px;
+    max-height: 115px;
     overflow-y: auto;
-    margin: 8px 0;
+    margin-bottom: 10px;
     color: #ddd;
     font-size: 14px;
 }
 
-.small-btn {
-    background: #292929 !important;
-    color: white !important;
+.cart-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    align-items: center;
+    padding: 7px 0;
+    border-bottom: 1px solid #222;
+}
+
+.cart-controls {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.cart-controls button {
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    background: #1f1f2e;
+    color: white;
+}
+
+.cart-controls .delete {
+    background: #ff3b3b;
+}
+
+.send-btn {
+    width: 100%;
+    background: #00eaff;
+    color: #000;
+    border: none;
+    padding: 11px;
+    border-radius: 12px;
+    font-weight: bold;
+}
+
+.send-btn:disabled {
+    background: #333;
+    color: #888;
+}
+
+.clear-btn {
+    width: 100%;
+    background: #292929;
+    color: white;
+    border: none;
+    padding: 9px;
+    border-radius: 12px;
+    font-weight: bold;
     margin-top: 8px;
 }
 
@@ -189,114 +238,24 @@ header p {
         <span class="empty">Sepet boş</span>
     </div>
 
-    <button onclick="siparisGonder()">Siparişi Gönder</button>
-    <button class="small-btn" onclick="sepetiTemizle()">Sepeti Temizle</button>
+    <button id="siparisBtn" class="send-btn" onclick="siparisGonder()" disabled>Siparişi Gönder</button>
+    <button class="clear-btn" onclick="sepetiTemizle()">Sepeti Temizle</button>
 </div>
 
 <script>
 const whatsappNumara = "905423948645";
 
 const urunler = [
-    {
-        id: 1,
-        ad: "Su",
-        dosya: "su",
-        fiyat: 15,
-        kategori: "İçecekler",
-        stok: true,
-        yeni: false,
-        kampanya: false
-    },
-    {
-        id: 2,
-        ad: "Pepsi Cam Şişe",
-        dosya: "pepsi",
-        fiyat: 50,
-        kategori: "İçecekler",
-        stok: true,
-        yeni: false,
-        kampanya: false
-    },
-    {
-        id: 3,
-        ad: "Pepsi Kutu",
-        dosya: "pepsi-kutu",
-        fiyat: 50,
-        kategori: "İçecekler",
-        stok: true,
-        yeni: false,
-        kampanya: false
-    },
-    {
-        id: 4,
-        ad: "7UP",
-        dosya: "7up",
-        fiyat: 50,
-        kategori: "İçecekler",
-        stok: true,
-        yeni: false,
-        kampanya: false
-    },
-    {
-        id: 5,
-        ad: "Yedigün",
-        dosya: "yedigun",
-        fiyat: 50,
-        kategori: "İçecekler",
-        stok: true,
-        yeni: false,
-        kampanya: false
-    },
-    {
-        id: 6,
-        ad: "Lipton Ice Tea",
-        dosya: "lipton",
-        fiyat: 50,
-        kategori: "İçecekler",
-        stok: true,
-        yeni: false,
-        kampanya: false
-    },
-    {
-        id: 7,
-        ad: "Tropicana",
-        dosya: "tropicana",
-        fiyat: 50,
-        kategori: "İçecekler",
-        stok: true,
-        yeni: false,
-        kampanya: false
-    },
-    {
-        id: 8,
-        ad: "Maden Suyu",
-        dosya: "maden-suyu",
-        fiyat: 30,
-        kategori: "İçecekler",
-        stok: true,
-        yeni: false,
-        kampanya: false
-    },
-    {
-        id: 9,
-        ad: "Tost",
-        dosya: "tost",
-        fiyat: 100,
-        kategori: "Yiyecekler",
-        stok: true,
-        yeni: false,
-        kampanya: false
-    },
-    {
-        id: 10,
-        ad: "Sufle",
-        dosya: "sufle",
-        fiyat: 100,
-        kategori: "Yiyecekler",
-        stok: true,
-        yeni: true,
-        kampanya: false
-    }
+    { id: 1, ad: "Su", dosya: "su", fiyat: 15, kategori: "İçecekler", stok: true, yeni: false, kampanya: false },
+    { id: 2, ad: "Pepsi Cam Şişe", dosya: "pepsi", fiyat: 50, kategori: "İçecekler", stok: true, yeni: false, kampanya: false },
+    { id: 3, ad: "Pepsi Kutu", dosya: "pepsi-kutu", fiyat: 50, kategori: "İçecekler", stok: true, yeni: false, kampanya: false },
+    { id: 4, ad: "7UP", dosya: "7up", fiyat: 50, kategori: "İçecekler", stok: true, yeni: false, kampanya: false },
+    { id: 5, ad: "Yedigün", dosya: "yedigun", fiyat: 50, kategori: "İçecekler", stok: true, yeni: false, kampanya: false },
+    { id: 6, ad: "Lipton Ice Tea", dosya: "lipton", fiyat: 50, kategori: "İçecekler", stok: true, yeni: false, kampanya: false },
+    { id: 7, ad: "Tropicana", dosya: "tropicana", fiyat: 50, kategori: "İçecekler", stok: true, yeni: false, kampanya: false },
+    { id: 8, ad: "Maden Suyu", dosya: "maden-suyu", fiyat: 30, kategori: "İçecekler", stok: true, yeni: false, kampanya: false },
+    { id: 9, ad: "Tost", dosya: "tost", fiyat: 100, kategori: "Yiyecekler", stok: true, yeni: false, kampanya: false },
+    { id: 10, ad: "Sufle", dosya: "sufle", fiyat: 100, kategori: "Yiyecekler", stok: true, yeni: true, kampanya: false }
 ];
 
 let aktifKategori = "İçecekler";
@@ -353,13 +312,40 @@ function sepeteEkle(id) {
     sepetiGuncelle();
 }
 
+function adetArtir(id) {
+    const urun = sepet.find(item => item.id === id);
+    if (urun) urun.adet += 1;
+    sepetiGuncelle();
+}
+
+function adetAzalt(id) {
+    const urun = sepet.find(item => item.id === id);
+
+    if (!urun) return;
+
+    urun.adet -= 1;
+
+    if (urun.adet <= 0) {
+        sepet = sepet.filter(item => item.id !== id);
+    }
+
+    sepetiGuncelle();
+}
+
+function urunSil(id) {
+    sepet = sepet.filter(item => item.id !== id);
+    sepetiGuncelle();
+}
+
 function sepetiGuncelle() {
     const liste = document.getElementById("sepetListesi");
     const toplamAlan = document.getElementById("toplam");
+    const siparisBtn = document.getElementById("siparisBtn");
 
     if (sepet.length === 0) {
         liste.innerHTML = '<span class="empty">Sepet boş</span>';
         toplamAlan.innerText = 0;
+        siparisBtn.disabled = true;
         return;
     }
 
@@ -368,10 +354,21 @@ function sepetiGuncelle() {
 
     sepet.forEach(item => {
         toplam += item.fiyat * item.adet;
-        liste.innerHTML += `${item.adet} × ${item.ad} - ${item.fiyat * item.adet} TL<br>`;
+
+        liste.innerHTML += `
+            <div class="cart-row">
+                <div>${item.adet} × ${item.ad}</div>
+                <div class="cart-controls">
+                    <button onclick="adetAzalt(${item.id})">−</button>
+                    <button onclick="adetArtir(${item.id})">+</button>
+                    <button class="delete" onclick="urunSil(${item.id})">×</button>
+                </div>
+            </div>
+        `;
     });
 
     toplamAlan.innerText = toplam;
+    siparisBtn.disabled = false;
 }
 
 function sepetiTemizle() {
@@ -380,10 +377,7 @@ function sepetiTemizle() {
 }
 
 function siparisGonder() {
-    if (sepet.length === 0) {
-        alert("Sepet boş.");
-        return;
-    }
+    if (sepet.length === 0) return;
 
     let mesaj = "Merhaba, sipariş vermek istiyorum.%0A%0A";
     mesaj += "Sipariş:%0A";
@@ -396,6 +390,7 @@ function siparisGonder() {
 }
 
 urunleriGoster();
+sepetiGuncelle();
 </script>
 
 </body>
