@@ -16,7 +16,7 @@ body {
         radial-gradient(circle at top right, rgba(150,0,255,.18), transparent 35%),
         #07070d;
     color: white;
-    padding-bottom: 90px;
+    padding-bottom: 105px;
 }
 
 header {
@@ -37,9 +37,7 @@ header p {
     font-size: 14px;
 }
 
-.search-box {
-    padding: 12px;
-}
+.search-box { padding: 12px; }
 
 .search-box input {
     width: 100%;
@@ -52,8 +50,21 @@ header p {
     font-size: 15px;
 }
 
-.search-box input::placeholder {
-    color: #aaa;
+.search-box input::placeholder { color: #aaa; }
+
+.section-toggle {
+    width: calc(100% - 24px);
+    margin: 0 12px 10px;
+    padding: 14px;
+    border-radius: 16px;
+    border: 1px solid rgba(0,234,255,.35);
+    background: rgba(23,23,36,.9);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .tabs {
@@ -81,25 +92,6 @@ header p {
     color: #000;
 }
 
-.section-toggle {
-    width: calc(100% - 24px);
-    margin: 10px 12px 4px;
-    padding: 14px;
-    border-radius: 16px;
-    border: 1px solid rgba(0,234,255,.35);
-    background: rgba(23,23,36,.9);
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.hidden {
-    display: none !important;
-}
-    
 .section-title {
     padding: 0 12px;
     margin: 10px 0 4px;
@@ -114,6 +106,8 @@ header p {
     padding: 12px;
 }
 
+.hidden { display: none !important; }
+
 .card {
     position: relative;
     background: rgba(23,23,36,.88);
@@ -121,6 +115,12 @@ header p {
     border-radius: 17px;
     overflow: hidden;
     box-shadow: 0 0 18px rgba(0,234,255,.06);
+    transition: transform .15s, box-shadow .15s;
+}
+
+.card.added {
+    transform: scale(1.04);
+    box-shadow: 0 0 25px rgba(0,234,255,.45);
 }
 
 .card img {
@@ -131,9 +131,7 @@ header p {
     padding: 8px;
 }
 
-.card-body {
-    padding: 9px;
-}
+.card-body { padding: 9px; }
 
 .card h3 {
     margin: 0 0 6px;
@@ -177,18 +175,60 @@ header p {
     color: #fff;
 }
 
-.cart-float {
-    position: fixed;
-    right: 14px;
-    bottom: 14px;
+.qty-badge {
+    position: absolute;
+    top: 7px;
+    right: 7px;
     background: #00eaff;
     color: #000;
-    border: none;
-    padding: 14px 18px;
+    min-width: 26px;
+    height: 26px;
+    padding: 4px 7px;
     border-radius: 999px;
+    font-size: 13px;
     font-weight: bold;
-    box-shadow: 0 0 25px rgba(0,234,255,.4);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+}
+
+.qty-badge.show {
+    display: flex;
+}
+
+.bottom-cart {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
     z-index: 20;
+    border: none;
+    border-radius: 18px;
+    padding: 14px 16px;
+    background: #24242b;
+    color: #888;
+    font-weight: bold;
+    box-shadow: 0 0 18px rgba(0,0,0,.35);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bottom-cart.active {
+    background: #00eaff;
+    color: #000;
+    box-shadow: 0 0 28px rgba(0,234,255,.45);
+}
+
+.bottom-cart.bump {
+    animation: bump .25s ease;
+}
+
+@keyframes bump {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+    100% { transform: scale(1); }
 }
 
 .overlay {
@@ -199,9 +239,7 @@ header p {
     z-index: 25;
 }
 
-.overlay.show {
-    display: block;
-}
+.overlay.show { display: block; }
 
 .cart-panel {
     position: fixed;
@@ -219,9 +257,7 @@ header p {
     flex-direction: column;
 }
 
-.cart-panel.open {
-    right: 0;
-}
+.cart-panel.open { right: 0; }
 
 .cart-head {
     display: flex;
@@ -268,18 +304,17 @@ header p {
     color: white;
 }
 
-.cart-controls .delete {
-    background: #ff3b3b;
-}
+.cart-controls .delete { background: #ff3b3b; }
 
 .send-btn {
     width: 100%;
     background: #00eaff;
     color: #000;
     border: none;
-    padding: 13px;
+    padding: 14px;
     border-radius: 13px;
     font-weight: bold;
+    font-size: 15px;
 }
 
 .send-btn:disabled {
@@ -316,11 +351,6 @@ header p {
     <input type="text" id="arama" placeholder="Ürün ara..." oninput="urunleriGoster()">
 </div>
 
-<div class="tabs">
-    <button class="tab active" onclick="kategoriSec('İçecekler', this)">🥤 İçecekler</button>
-    <button class="tab" onclick="kategoriSec('Yiyecekler', this)">🍔 Yiyecekler</button>
-</div>
-
 <button class="section-toggle" onclick="cokSatanToggle()">
     <span>🔥 Çok Satanlar</span>
     <span id="cokSatanOk">▼</span>
@@ -328,10 +358,18 @@ header p {
 
 <div class="grid hidden" id="cokSatanAlani"></div>
 
+<div class="tabs">
+    <button class="tab active" onclick="kategoriSec('İçecekler', this)">🥤 İçecekler</button>
+    <button class="tab" onclick="kategoriSec('Yiyecekler', this)">🍔 Yiyecekler</button>
+</div>
+
 <h2 class="section-title" id="kategoriBaslik">🥤 İçecekler</h2>
 <div class="grid" id="urunAlani"></div>
 
-<button class="cart-float" onclick="sepetiAc()">🛒 Sepet <span id="sepetAdet">0</span></button>
+<button class="bottom-cart" id="bottomCart" onclick="sepetiAc()">
+    <span id="bottomCartText">🛒 Sepet boş</span>
+    <span id="bottomCartAction">Ürün seç</span>
+</button>
 
 <div class="overlay" id="overlay" onclick="sepetiKapat()"></div>
 
@@ -345,7 +383,7 @@ header p {
         <span class="empty">Sepet boş</span>
     </div>
 
-    <button id="siparisBtn" class="send-btn" onclick="siparisGonder()" disabled>Siparişi Gönder</button>
+    <button id="siparisBtn" class="send-btn" onclick="siparisGonder()" disabled>WhatsApp ile Siparişi Gönder</button>
     <button class="clear-btn" onclick="sepetiTemizle()">Sepeti Temizle</button>
 </div>
 
@@ -361,6 +399,7 @@ const urunler = [
     { id: 6, ad: "Lipton Ice Tea", dosya: "lipton", fiyat: 50, kategori: "İçecekler", stok: true, yeni: false, kampanya: false, cokSatan: true },
     { id: 7, ad: "Tropicana", dosya: "tropicana", fiyat: 50, kategori: "İçecekler", stok: true, yeni: false, kampanya: false, cokSatan: false },
     { id: 8, ad: "Maden Suyu", dosya: "maden-suyu", fiyat: 30, kategori: "İçecekler", stok: true, yeni: false, kampanya: false, cokSatan: false },
+
     { id: 9, ad: "Tost", dosya: "tost", fiyat: 100, kategori: "Yiyecekler", stok: true, yeni: false, kampanya: false, cokSatan: true },
     { id: 10, ad: "Sufle", dosya: "sufle", fiyat: 100, kategori: "Yiyecekler", stok: true, yeni: true, kampanya: false, cokSatan: false }
 ];
@@ -368,6 +407,11 @@ const urunler = [
 let aktifKategori = "İçecekler";
 let sepet = [];
 let cokSatanlarAcik = false;
+
+function sepettekiAdet(id) {
+    const urun = sepet.find(item => item.id === id);
+    return urun ? urun.adet : 0;
+}
 
 function kartHtml(urun) {
     let rozet = "";
@@ -378,9 +422,12 @@ function kartHtml(urun) {
         rozet = `<div class="badge">Yeni</div>`;
     }
 
+    const adet = sepettekiAdet(urun.id);
+
     return `
-        <div class="card">
+        <div class="card" id="card-${urun.id}">
             ${rozet}
+            <div class="qty-badge ${adet > 0 ? "show" : ""}" id="qty-${urun.id}">${adet}</div>
             <img src="images/${urun.dosya}.png" alt="${urun.ad}">
             <div class="card-body">
                 <h3>${urun.ad}</h3>
@@ -391,11 +438,16 @@ function kartHtml(urun) {
     `;
 }
 
+function cokSatanToggle() {
+    cokSatanlarAcik = !cokSatanlarAcik;
+    document.getElementById("cokSatanOk").innerText = cokSatanlarAcik ? "▲" : "▼";
+    urunleriGoster();
+}
+
 function urunleriGoster() {
     const arama = document.getElementById("arama").value.toLowerCase();
     const urunAlani = document.getElementById("urunAlani");
     const cokSatanAlani = document.getElementById("cokSatanAlani");
-    const bolumBaslik = document.getElementById("bolumBaslik");
 
     const filtreliUrunler = urunler.filter(urun =>
         urun.stok &&
@@ -411,20 +463,24 @@ function urunleriGoster() {
 
     urunAlani.innerHTML = filtreliUrunler.map(kartHtml).join("");
 
-  if (cokSatanlar.length > 0 && arama === "" && cokSatanlarAcik) {
-    cokSatanAlani.classList.remove("hidden");
-    cokSatanAlani.innerHTML = cokSatanlar.map(kartHtml).join("");
-} else {
-    cokSatanAlani.classList.add("hidden");
-}
+    if (cokSatanlarAcik && cokSatanlar.length > 0 && arama === "") {
+        cokSatanAlani.classList.remove("hidden");
+        cokSatanAlani.innerHTML = cokSatanlar.map(kartHtml).join("");
+    } else {
+        cokSatanAlani.classList.add("hidden");
+        cokSatanAlani.innerHTML = "";
+    }
 }
 
-function cokSatanToggle() {
-    cokSatanlarAcik = !cokSatanlarAcik;
+function kategoriSec(kategori, buton) {
+    aktifKategori = kategori;
 
-    document.getElementById("cokSatanOk").innerText = cokSatanlarAcik ? "▲" : "▼";
- 
-    
+    document.querySelectorAll(".tab").forEach(btn => btn.classList.remove("active"));
+    buton.classList.add("active");
+
+    document.getElementById("kategoriBaslik").innerText =
+        kategori === "İçecekler" ? "🥤 İçecekler" : "🍔 Yiyecekler";
+
     urunleriGoster();
 }
 
@@ -439,12 +495,27 @@ function sepeteEkle(id) {
     }
 
     sepetiGuncelle();
+    urunleriGoster();
+    animasyonVer(id);
+}
+
+function animasyonVer(id) {
+    const kartlar = document.querySelectorAll(`#card-${id}`);
+    kartlar.forEach(kart => {
+        kart.classList.add("added");
+        setTimeout(() => kart.classList.remove("added"), 180);
+    });
+
+    const bottomCart = document.getElementById("bottomCart");
+    bottomCart.classList.add("bump");
+    setTimeout(() => bottomCart.classList.remove("bump"), 250);
 }
 
 function adetArtir(id) {
     const urun = sepet.find(item => item.id === id);
     if (urun) urun.adet += 1;
     sepetiGuncelle();
+    urunleriGoster();
 }
 
 function adetAzalt(id) {
@@ -458,24 +529,30 @@ function adetAzalt(id) {
     }
 
     sepetiGuncelle();
+    urunleriGoster();
 }
 
 function urunSil(id) {
     sepet = sepet.filter(item => item.id !== id);
     sepetiGuncelle();
+    urunleriGoster();
 }
 
 function sepetiGuncelle() {
     const liste = document.getElementById("sepetListesi");
     const siparisBtn = document.getElementById("siparisBtn");
-    const sepetAdet = document.getElementById("sepetAdet");
+    const bottomCart = document.getElementById("bottomCart");
+    const bottomCartText = document.getElementById("bottomCartText");
+    const bottomCartAction = document.getElementById("bottomCartAction");
 
     const toplamAdet = sepet.reduce((toplam, item) => toplam + item.adet, 0);
-    sepetAdet.innerText = toplamAdet;
 
     if (sepet.length === 0) {
         liste.innerHTML = '<span class="empty">Sepet boş</span>';
         siparisBtn.disabled = true;
+        bottomCart.classList.remove("active");
+        bottomCartText.innerText = "🛒 Sepet boş";
+        bottomCartAction.innerText = "Ürün seç";
         return;
     }
 
@@ -495,14 +572,19 @@ function sepetiGuncelle() {
     });
 
     siparisBtn.disabled = false;
+    bottomCart.classList.add("active");
+    bottomCartText.innerText = `🛒 ${toplamAdet} ürün eklendi`;
+    bottomCartAction.innerText = "Sepeti Gör →";
 }
 
 function sepetiTemizle() {
     sepet = [];
     sepetiGuncelle();
+    urunleriGoster();
 }
 
 function sepetiAc() {
+    if (sepet.length === 0) return;
     document.getElementById("cartPanel").classList.add("open");
     document.getElementById("overlay").classList.add("show");
 }
