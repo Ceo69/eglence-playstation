@@ -81,6 +81,25 @@ header p {
     color: #000;
 }
 
+.section-toggle {
+    width: calc(100% - 24px);
+    margin: 10px 12px 4px;
+    padding: 14px;
+    border-radius: 16px;
+    border: 1px solid rgba(0,234,255,.35);
+    background: rgba(23,23,36,.9);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hidden {
+    display: none !important;
+}
+    
 .section-title {
     padding: 0 12px;
     margin: 10px 0 4px;
@@ -302,8 +321,12 @@ header p {
     <button class="tab" onclick="kategoriSec('Yiyecekler', this)">🍔 Yiyecekler</button>
 </div>
 
-<h2 class="section-title" id="bolumBaslik">🔥 Çok Satanlar</h2>
-<div class="grid" id="cokSatanAlani"></div>
+<button class="section-toggle" onclick="cokSatanToggle()">
+    <span>🔥 Çok Satanlar</span>
+    <span id="cokSatanOk">▼</span>
+</button>
+
+<div class="grid hidden" id="cokSatanAlani"></div>
 
 <h2 class="section-title" id="kategoriBaslik">🥤 İçecekler</h2>
 <div class="grid" id="urunAlani"></div>
@@ -344,6 +367,7 @@ const urunler = [
 
 let aktifKategori = "İçecekler";
 let sepet = [];
+let cokSatanlarAcik = false;
 
 function kartHtml(urun) {
     let rozet = "";
@@ -387,25 +411,20 @@ function urunleriGoster() {
 
     urunAlani.innerHTML = filtreliUrunler.map(kartHtml).join("");
 
-    if (cokSatanlar.length > 0 && arama === "") {
-        bolumBaslik.style.display = "block";
-        cokSatanAlani.style.display = "grid";
-        cokSatanAlani.innerHTML = cokSatanlar.map(kartHtml).join("");
-    } else {
-        bolumBaslik.style.display = "none";
-        cokSatanAlani.style.display = "none";
-    }
+  if (cokSatanlar.length > 0 && arama === "" && cokSatanlarAcik) {
+    cokSatanAlani.classList.remove("hidden");
+    cokSatanAlani.innerHTML = cokSatanlar.map(kartHtml).join("");
+} else {
+    cokSatanAlani.classList.add("hidden");
+}
 }
 
-function kategoriSec(kategori, buton) {
-    aktifKategori = kategori;
+function cokSatanToggle() {
+    cokSatanlarAcik = !cokSatanlarAcik;
 
-    document.querySelectorAll(".tab").forEach(btn => btn.classList.remove("active"));
-    buton.classList.add("active");
-
-    document.getElementById("kategoriBaslik").innerText =
-        kategori === "İçecekler" ? "🥤 İçecekler" : "🍔 Yiyecekler";
-
+    document.getElementById("cokSatanOk").innerText = cokSatanlarAcik ? "▲" : "▼";
+ 
+    
     urunleriGoster();
 }
 
